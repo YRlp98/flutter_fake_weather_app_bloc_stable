@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_fake_weather_app_bloc_stable/data/model/weather.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';
