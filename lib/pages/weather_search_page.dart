@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_fake_weather_app_bloc_stable/bloc/weather_bloc.dart';
 import 'package:flutter_fake_weather_app_bloc_stable/data/model/weather.dart';
 
 import 'weather_detail_page.dart';
@@ -13,8 +15,29 @@ class WeatherSearchPage extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
-        //TODO: Display the weather and loading indicator using Bloc
-        child: buildInitialInput(),
+        child: BlocListener<WeatherBloc, WeatherState>(
+          //! use listener to guaranty builder runs only when state changes
+          listener: (context, state) {
+            if (state is WeatherError) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: new Text(state.message),
+              ));
+            }
+          },
+          child: BlocBuilder<WeatherBloc, WeatherState>(
+            builder: (context, state) {
+              if (state is WeatherInitial) {
+                return buildInitialInput();
+              } else if (state is WeatherLoading) {
+                return buildLoading();
+              } else if (state is WeatherLoaded) {
+                return buildColumnWithData(context, state.weather);
+              } else if (state is WeatherError) {
+                return buildInitialInput();
+              }
+            },
+          ),
+        ),
       ),
     );
   }
@@ -82,6 +105,7 @@ class CityInputField extends StatelessWidget {
   }
 
   void submitCityName(BuildContext context, String cityName) {
-    //TODO: Fetch the weather from the repository and display it somehow
+    final weatherBloc = BlocProvider.of<WeatherBloc>(context);
+    weatherBloc.add(GetWeather(cityName));
   }
 }
