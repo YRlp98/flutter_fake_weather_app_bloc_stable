@@ -4,7 +4,7 @@ import 'package:flutter_fake_weather_app_bloc_stable/bloc/weather_bloc.dart';
 
 import '../data/model/weather.dart';
 
-class WeatherDetailPage extends StatelessWidget {
+class WeatherDetailPage extends StatefulWidget {
   final Weather masterWeather;
 
   const WeatherDetailPage({
@@ -13,10 +13,20 @@ class WeatherDetailPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    BlocProvider.of<WeatherBloc>(context)
-      ..add(GetDeatailedWeather(masterWeather.cityName));
+  _WeatherDetailPageState createState() => _WeatherDetailPageState();
+}
 
+class _WeatherDetailPageState extends State<WeatherDetailPage> {
+  //! to avoid calling provider when the UI is rebuild
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    BlocProvider.of<WeatherBloc>(context)
+      ..add(GetDeatailedWeather(widget.masterWeather.cityName));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Weather Detail"),
