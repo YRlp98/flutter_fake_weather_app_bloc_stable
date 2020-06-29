@@ -74,11 +74,16 @@ class WeatherSearchPage extends StatelessWidget {
           child: Text('See Details'),
           color: Colors.lightBlue[100],
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => WeatherDetailPage(
-                masterWeather: weather,
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: BlocProvider.of<WeatherBloc>(context),
+                  child: WeatherDetailPage(
+                    masterWeather: weather,
+                  ),
+                ),
               ),
-            ));
+            );
           },
         ),
         CityInputField(),
