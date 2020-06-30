@@ -56,5 +56,20 @@ void main() {
         ]);
       },
     );
+
+    blocTest(
+      'emits [WeatherLoading, WeatherLoaded] when successful',
+      build: () {
+        when(mockWeatherRepository.fetchWeather(any))
+            .thenAnswer((_) async => weather);
+        return WeatherBloc(mockWeatherRepository);
+      },
+      act: (bloc) => bloc.add(GetWeather('Arak')),
+      expect: [
+        WeatherInitial(),
+        WeatherLoading(),
+        WeatherLoaded(weather),
+      ],
+    );
   });
 }
