@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_fake_weather_app_bloc_stable/bloc/weather_bloc.dart';
 import 'package:flutter_fake_weather_app_bloc_stable/data/model/weather.dart';
 import 'package:flutter_fake_weather_app_bloc_stable/data/weather_repository.dart';
@@ -22,8 +23,11 @@ void main() {
       () {
         when(mockWeatherRepository.fetchWeather(any))
             .thenAnswer((_) async => weather);
+
         final bloc = WeatherBloc(mockWeatherRepository);
+
         bloc.add(GetWeather('Arak'));
+
         expectLater(
           bloc,
           emitsInOrder([
@@ -32,6 +36,24 @@ void main() {
             WeatherLoaded(weather),
           ]),
         );
+      },
+    );
+
+    test(
+      'NEWER WAY BUT LONG-WINDED emits [WeatherLoading, WeatherLoaded] when successful',
+      () {
+        when(mockWeatherRepository.fetchWeather(any))
+            .thenAnswer((_) async => weather);
+
+        final bloc = WeatherBloc(mockWeatherRepository);
+
+        bloc.add(GetWeather('Arak'));
+
+        emitsExactly(bloc, [
+          WeatherInitial(),
+          WeatherLoading(),
+          WeatherLoaded(weather),
+        ]);
       },
     );
   });
