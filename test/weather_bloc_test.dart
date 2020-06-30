@@ -57,6 +57,7 @@ void main() {
       },
     );
 
+    //?  BlocTest ==========================================
     blocTest(
       'emits [WeatherLoading, WeatherLoaded] when successful',
       build: () {
@@ -69,6 +70,20 @@ void main() {
         WeatherInitial(),
         WeatherLoading(),
         WeatherLoaded(weather),
+      ],
+    );
+
+    blocTest(
+      'emits [WeatherLoading, WeatherError] when unsuccessful',
+      build: () {
+        when(mockWeatherRepository.fetchWeather(any)).thenThrow(NetworkError());
+        return WeatherBloc(mockWeatherRepository);
+      },
+      act: (bloc) => bloc.add(GetWeather('Arak')),
+      expect: [
+        WeatherInitial(),
+        WeatherLoading(),
+        WeatherError("Couldn't fetch weather. Is the device online?"),
       ],
     );
   });
